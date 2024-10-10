@@ -18,9 +18,13 @@ namespace ViccAdatbazis.Controllers
 
         //Viccek lekérdezése
         [HttpGet]
-        public async Task<ActionResult<List<Vicc>>> GetViccek()
+        //public async Task<ActionResult<List<Vicc>>> GetViccek()
+        //{
+        //    return await _context.Viccek.Where(x => x.Aktiv).ToListAsync();
+        //}
+        public async Task<ActionResult<string>> GetViccek()
         {
-            return await _context.Viccek.Where(x => x.Aktiv).ToListAsync();
+            return Ok("hello");
         }
 
         //Vicc lekérdezése
