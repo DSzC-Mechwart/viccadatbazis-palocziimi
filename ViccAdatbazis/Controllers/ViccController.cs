@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using ViccAdatbazis.Data;
 using ViccAdatbazis.Models;
 
@@ -24,7 +25,7 @@ namespace ViccAdatbazis.Controllers
         //}
         public async Task<ActionResult<string>> GetViccek()
         {
-            return Ok("hello");
+            return JsonSerializer.Serialize(_context.Viccek);
         }
 
         //Vicc lekérdezése
@@ -92,8 +93,35 @@ namespace ViccAdatbazis.Controllers
         }
 
         //Lájkolás
+        [Route("like/{id}")]
+        [HttpPatch("{id}")]
+        public async Task<ActionResult> LajkVicc(int id)
+        {
+            Vicc? vicc = await _context.Viccek.FindAsync(id);
+            if (vicc == null)
+            {
+                return NotFound();
+            }
+            vicc.Tetszik += 1;
+            _context.Entry(vicc).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return CreatedAtAction("LajkVicc", new { id = vicc.Id }, vicc.Tetszik);
+        }
 
         //Diszlájkolás
-
+        [Route("dislike/{id}")]
+        [HttpPatch("{id}")]
+        public async Task<ActionResult> DislajkVicc(int id)
+        {
+            Vicc? vicc = await _context.Viccek.FindAsync(id);
+            if (vicc == null)
+            {
+                return NotFound();
+            }
+            vicc.NemTetszik += 1;
+            _context.Entry(vicc).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return CreatedAtAction("DislajkVicc", new { id = vicc.Id }, vicc.NemTetszik);
+        }
     }
 }
